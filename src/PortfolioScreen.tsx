@@ -3,7 +3,7 @@ import {View, FlatList, ActivityIndicator, StyleSheet} from 'react-native';
 import {calculateHoldingValues, calculatePortfolioSummary} from './holdings';
 import {HoldingListItem, PortfolioSummary} from './components';
 import {Holding, HoldingWithComputedValues} from './types';
-import { fetchHoldingsData } from "./fetchHoldingsData";
+import {fetchHoldingsData} from './api';
 
 const PortfolioScreen: React.FC = () => {
   const [holdings, setHoldings] = useState<Holding[]>([]);
@@ -39,18 +39,20 @@ const PortfolioScreen: React.FC = () => {
       {loading ? (
         <ActivityIndicator style={styles.loader} />
       ) : (
-        <FlatList
-          data={holdingData}
-          renderItem={({item}) => <HoldingListItem holding={item} />}
-          keyExtractor={item => item.symbol.toString()}
-        />
+        <>
+          <FlatList
+            data={holdingData}
+            renderItem={({item}) => <HoldingListItem holding={item} />}
+            keyExtractor={item => item.symbol.toString()}
+          />
+          <PortfolioSummary
+            totalCurrentValue={portfolioSummary.totalCurrentValue}
+            totalInvestmentValue={portfolioSummary.totalInvestmentValue}
+            totalPNL={portfolioSummary.totalPNL}
+            todayPNL={portfolioSummary.todayPNL}
+          />
+        </>
       )}
-      <PortfolioSummary
-        totalCurrentValue={portfolioSummary.totalCurrentValue}
-        totalInvestmentValue={portfolioSummary.totalInvestmentValue}
-        totalPNL={portfolioSummary.totalPNL}
-        todayPNL={portfolioSummary.todayPNL}
-      />
     </View>
   );
 };
